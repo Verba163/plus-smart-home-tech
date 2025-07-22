@@ -4,7 +4,8 @@ package ru.yandex.practicum.collector.service.sensors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecord;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class SensorsEventService {
 
-    private final KafkaProducer<String, SpecificRecord> kafkaProducer;
+    private final Producer<String, SpecificRecordBase> kafkaProducer;
     private final SensorEventMapperFactory mapperFactory;
 
     @Value("${topic.sensor-events}")
