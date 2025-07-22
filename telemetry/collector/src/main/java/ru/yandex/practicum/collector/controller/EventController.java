@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.collector.model.hub.HubEvent;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
-import ru.yandex.practicum.collector.service.SensorsEventService;
+import ru.yandex.practicum.collector.service.sensors.SensorsEventService;
 import ru.yandex.practicum.collector.service.events.HubEventService;
 
 import static ru.yandex.practicum.collector.constants.Constants.*;

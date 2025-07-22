@@ -1,6 +1,7 @@
-package ru.yandex.practicum.collector.service;
+package ru.yandex.practicum.collector.service.sensors;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -13,11 +14,9 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
 import java.time.Instant;
 
-/**
- * Service for processing sensor events and sending them to Kafka.
- */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SensorsEventService {
 
     private final KafkaProducer<String, SpecificRecord> kafkaProducer;
@@ -25,12 +24,6 @@ public class SensorsEventService {
 
     @Value("${topic.sensor-events}")
     private String sensorEventsTopic;
-
-    public SensorsEventService(KafkaProducer<String, SpecificRecord> kafkaProducer,
-                               SensorEventMapperFactory mapperFactory) {
-        this.kafkaProducer = kafkaProducer;
-        this.mapperFactory = mapperFactory;
-    }
 
     public void processEvent(SensorEvent sensorEvent) {
         try {
