@@ -1,8 +1,7 @@
 package ru.yandex.practicum.collector.config;
 
-import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,13 +12,13 @@ import ru.yandex.practicum.collector.serializer.GeneralAvroSerializer;
 import java.util.Properties;
 
 @Configuration
-public class KafkaConfig {
+public class KafkaProducerConfig {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
-    public Producer<String, SpecificRecordBase> kafkaProducer() {
+    public KafkaProducer<String, SpecificRecord> kafkaProducer() {
         Properties props = new Properties();
 
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
