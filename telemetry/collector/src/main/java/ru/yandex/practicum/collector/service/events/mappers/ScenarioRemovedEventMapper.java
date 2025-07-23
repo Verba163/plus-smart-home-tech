@@ -17,9 +17,9 @@ public class ScenarioRemovedEventMapper implements HubEventMapper {
 
     @Override
     public SpecificRecordBase mapToAvro(HubEvent event) {
-        ScenarioRemovedEvent e = (ScenarioRemovedEvent) event;
+        ScenarioRemovedEvent scenarioEvent = (ScenarioRemovedEvent) event;
         return ScenarioRemovedEventAvro.newBuilder()
-                .setName(e.getName())
+                .setName(scenarioEvent.getName())
                 .build();
     }
 }

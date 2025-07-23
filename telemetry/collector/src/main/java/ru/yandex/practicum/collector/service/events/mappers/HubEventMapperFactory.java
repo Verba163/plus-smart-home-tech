@@ -14,9 +14,9 @@ public class HubEventMapperFactory {
 
     private final List<HubEventMapper> mappers;
 
-    public SpecificRecordBase map(HubEvent event) {
+    public SpecificRecordBase mapToAvro(HubEvent event) {
         return mappers.stream()
-                .filter(m -> m.supports(event.getType()))
+                .filter(mapper -> mapper.supports(event.getType()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("Unknown sensor type: %s", event.getType())

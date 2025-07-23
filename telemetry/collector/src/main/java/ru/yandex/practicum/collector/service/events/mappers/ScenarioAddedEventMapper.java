@@ -19,27 +19,27 @@ public class ScenarioAddedEventMapper implements HubEventMapper {
 
     @Override
     public SpecificRecordBase mapToAvro(HubEvent event) {
-        ScenarioAddedEvent e = (ScenarioAddedEvent) event;
+        ScenarioAddedEvent scenarioEvent = (ScenarioAddedEvent) event;
 
-        List<ScenarioConditionAvro> conditions = e.getConditions().stream()
-                .map(c -> ScenarioConditionAvro.newBuilder()
-                        .setSensorId(c.getSensorId())
-                        .setType(ConditionTypeAvro.valueOf(c.getType().name()))
-                        .setOperation(ConditionOperationAvro.valueOf(c.getOperation().name()))
-                        .setValue(c.getValue())
+        List<ScenarioConditionAvro> conditions = scenarioEvent.getConditions().stream()
+                .map(condition -> ScenarioConditionAvro.newBuilder()
+                        .setSensorId(condition.getSensorId())
+                        .setType(ConditionTypeAvro.valueOf(condition.getType().name()))
+                        .setOperation(ConditionOperationAvro.valueOf(condition.getOperation().name()))
+                        .setValue(condition.getValue())
                         .build())
                 .toList();
 
-        List<DeviceActionAvro> actions = e.getActions().stream()
-                .map(a -> DeviceActionAvro.newBuilder()
-                        .setSensorId(a.getSensorId())
-                        .setType(ActionTypeAvro.valueOf(a.getType().name()))
-                        .setValue(a.getValue())
+        List<DeviceActionAvro> actions = scenarioEvent.getActions().stream()
+                .map(action -> DeviceActionAvro.newBuilder()
+                        .setSensorId(action.getSensorId())
+                        .setType(ActionTypeAvro.valueOf(action.getType().name()))
+                        .setValue(action.getValue())
                         .build())
                 .toList();
 
         return ScenarioAddedEventAvro.newBuilder()
-                .setName(e.getName())
+                .setName(scenarioEvent.getName())
                 .setConditions(conditions)
                 .setActions(actions)
                 .build();
