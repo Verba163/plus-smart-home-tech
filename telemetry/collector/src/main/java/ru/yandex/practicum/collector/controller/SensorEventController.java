@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.collector.model.hub.HubEvent;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
-import ru.yandex.practicum.collector.service.sensors.SensorsEventService;
 import ru.yandex.practicum.collector.service.events.HubEventService;
+import ru.yandex.practicum.collector.service.sensors.SensorsEventService;
 
-import static ru.yandex.practicum.collector.constants.Constants.*;
+import static ru.yandex.practicum.collector.constants.Constants.BASE_PATH;
+import static ru.yandex.practicum.collector.constants.Constants.SENSORS_PATH;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 @RequestMapping(BASE_PATH)
-public class EventController {
+public class SensorEventController {
 
     private final HubEventService hubEventService;
     private final SensorsEventService sensorsEventService;
@@ -31,19 +31,7 @@ public class EventController {
         } catch (Exception e) {
             log.error("Error processing sensor event at {}/{}: {}", BASE_PATH, SENSORS_PATH, sensorEvent, e);
             return ResponseEntity.internalServerError()
-                    .body("Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
-        }
-    }
-
-    @PostMapping(HUBS_PATH)
-    public ResponseEntity<String> collectHubEvent(@RequestBody HubEvent hubEvent) {
-        try {
-            hubEventService.processEvent(hubEvent);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error("Error processing hub event at {}/{}: {}", BASE_PATH, HUBS_PATH, hubEvent, e);
-            return ResponseEntity.internalServerError()
-                    .body("Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                    .body(String.format("Error: %s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
     }
 }
