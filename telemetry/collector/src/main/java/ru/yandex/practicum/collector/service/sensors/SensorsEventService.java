@@ -1,7 +1,7 @@
 package ru.yandex.practicum.collector.service.sensors;
 
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -17,7 +17,7 @@ import java.time.Instant;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SensorsEventService {
 
     private final Producer<String, SpecificRecordBase> kafkaProducer;
