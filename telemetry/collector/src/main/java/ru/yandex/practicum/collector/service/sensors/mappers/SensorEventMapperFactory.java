@@ -1,14 +1,13 @@
 package ru.yandex.practicum.collector.service.sensors.mappers;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecord;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
 
 import java.util.List;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class SensorEventMapperFactory {
 

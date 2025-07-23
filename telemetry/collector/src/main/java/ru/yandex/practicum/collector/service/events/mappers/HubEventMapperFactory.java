@@ -1,19 +1,17 @@
 package ru.yandex.practicum.collector.service.events.mappers;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.collector.model.hub.HubEvent;
 
 import java.util.List;
 
-@Service
+@Component
+@RequiredArgsConstructor
 public class HubEventMapperFactory {
 
     private final List<HubEventMapper> mappers;
-
-    public HubEventMapperFactory(List<HubEventMapper> mappers) {
-        this.mappers = mappers;
-    }
 
     public SpecificRecordBase map(HubEvent event) {
         return mappers.stream()
