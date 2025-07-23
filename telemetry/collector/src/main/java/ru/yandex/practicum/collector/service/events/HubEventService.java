@@ -3,7 +3,7 @@ package ru.yandex.practicum.collector.service.events;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.time.Instant;
 @Service
 public class HubEventService {
 
-    private final KafkaProducer<String, SpecificRecordBase> kafkaProducer;
+    private final Producer<String, SpecificRecordBase> kafkaProducer;
     private final HubEventMapperFactory mapperFactory;
 
     @Value("${topic.hub-events}")
