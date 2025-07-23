@@ -23,7 +23,7 @@ public class EventController {
     private final HubEventService hubEventService;
     private final SensorsEventService sensorsEventService;
 
-    @PostMapping(BASE_PATH + SENSORS_PATH)
+    @PostMapping(SENSORS_PATH)
     public ResponseEntity<String> collectSensorEvent(@RequestBody SensorEvent sensorEvent) {
         try {
             sensorsEventService.processEvent(sensorEvent);
@@ -35,7 +35,7 @@ public class EventController {
         }
     }
 
-    @PostMapping(BASE_PATH + HUBS_PATH)
+    @PostMapping(HUBS_PATH)
     public ResponseEntity<String> collectHubEvent(@RequestBody HubEvent hubEvent) {
         try {
             hubEventService.processEvent(hubEvent);
