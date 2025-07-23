@@ -1,6 +1,7 @@
 package ru.yandex.practicum.collector.service.sensors.mappers;
 
 import org.apache.avro.specific.SpecificRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
 
@@ -11,6 +12,7 @@ public class SensorEventMapperFactory {
 
     private final List<SensorEventMapper> mappers;
 
+    @Autowired
     public SensorEventMapperFactory(List<SensorEventMapper> mappers) {
         this.mappers = mappers;
     }
