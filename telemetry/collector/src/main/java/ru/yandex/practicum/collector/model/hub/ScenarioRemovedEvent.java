@@ -1,7 +1,6 @@
 package ru.yandex.practicum.collector.model.hub;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +15,7 @@ import ru.yandex.practicum.collector.model.hub.enums.DeviceEventType;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ScenarioRemovedEvent extends HubEvent {
 
-    @NotNull
-    @Size(min = 3)
+    @NotBlank
     String name;
 
     @Override

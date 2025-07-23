@@ -1,7 +1,7 @@
 package ru.yandex.practicum.collector.model.hub;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,16 +17,13 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ScenarioAddedEvent extends HubEvent {
 
-    @NotNull
-    @Size(min = 3)
+    @NotBlank
     String name;
 
-    @NotNull
-    @Size(min = 1)
+    @NotEmpty
     List<ScenarioCondition> conditions;
 
-    @NotNull
-    @Size(min = 1)
+    @NotEmpty
     List<DeviceAction> actions;
 
     @Override
