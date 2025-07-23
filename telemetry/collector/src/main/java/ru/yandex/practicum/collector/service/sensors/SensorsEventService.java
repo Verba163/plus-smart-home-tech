@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
 import ru.yandex.practicum.collector.service.sensors.mappers.SensorEventMapperFactory;
-import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
-
+import ru.yandex.practicum.kafka.telemetry.event.*;
 import java.time.Instant;
 
 @Slf4j
