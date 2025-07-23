@@ -1,6 +1,7 @@
 package ru.yandex.practicum.collector.service.sensors.mappers;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecord;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
@@ -8,7 +9,7 @@ import ru.yandex.practicum.collector.model.sensors.SensorEvent;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SensorEventMapperFactory {
 
     private final List<SensorEventMapper> mappers;
