@@ -11,10 +11,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HubEventMapperFactory {
 
-
     private final List<HubEventMapper> mappers;
 
-    public SpecificRecordBase map(HubEvent event) {
+    public SpecificRecordBase mapToAvro(HubEvent event) {
         return mappers.stream()
                 .filter(m -> m.supports(event.getType()))
                 .findFirst()
