@@ -1,5 +1,6 @@
 package ru.yandex.practicum.collector.service.handlers.sensors;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
@@ -15,9 +16,10 @@ import java.time.Instant;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class LightSensorEventHandler implements SensorEventHandler {
 
-    SensorsEventService sensorsEventService;
+    private final SensorsEventService sensorsEventService;
 
     @Override
     public SensorEventProto.PayloadCase getMessageType() {

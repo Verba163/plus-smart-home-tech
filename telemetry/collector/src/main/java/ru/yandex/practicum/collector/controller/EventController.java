@@ -38,7 +38,6 @@ public class EventController extends CollectorControllerGrpc.CollectorController
     public void collectSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
         try {
             if (sensorEventHandlers.containsKey(request.getPayloadCase())) {
-
                 sensorEventHandlers.get(request.getPayloadCase()).handle(request);
             } else {
                 throw new IllegalArgumentException("Не могу найти обработчик для события " + request.getPayloadCase());

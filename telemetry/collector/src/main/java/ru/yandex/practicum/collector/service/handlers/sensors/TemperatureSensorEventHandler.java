@@ -1,5 +1,6 @@
 package ru.yandex.practicum.collector.service.handlers.sensors;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
@@ -12,9 +13,10 @@ import java.time.Instant;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class TemperatureSensorEventHandler implements SensorEventHandler {
 
-    SensorsEventService sensorsEventService;
+    private final SensorsEventService sensorsEventService;
 
     @Override
     public SensorEventProto.PayloadCase getMessageType() {

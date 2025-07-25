@@ -16,7 +16,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class ClimateSensorEventHandler implements SensorEventHandler {
 
-    SensorsEventService sensorsEventService;
+    private final SensorsEventService sensorsEventService;
 
     @Override
     public SensorEventProto.PayloadCase getMessageType() {
