@@ -7,6 +7,7 @@ import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.yandex.practicum.collector.service.events.HubEventService;
+import ru.yandex.practicum.collector.service.handlers.hub.HubEventHandler;
 import ru.yandex.practicum.collector.service.handlers.sensors.SensorEventHandler;
 import ru.yandex.practicum.grpc.telemetry.collector.CollectorControllerGrpc;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
@@ -24,12 +25,20 @@ public class EventController extends CollectorControllerGrpc.CollectorController
 
     private final HubEventService hubEventService;
     private final Map<SensorEventProto.PayloadCase, SensorEventHandler> sensorEventHandlers;
+    private final Map<HubEventProto.PayloadCase, HubEventHandler> hubEventHandlers;
 
-    public EventController(HubEventService hubEventService, Set<SensorEventHandler> sensorEventHandlers) {
+    public EventController(HubEventService hubEventService,
+                           Set<SensorEventHandler> sensorEventHandlers,
+                           Set<HubEventHandler> hubEventHandlers) {
         this.hubEventService = hubEventService;
         this.sensorEventHandlers = sensorEventHandlers.stream()
                 .collect(Collectors.toMap(
                         SensorEventHandler::getMessageType,
+                        Function.identity()
+                ));
+        this.hubEventHandlers = hubEventHandlers.stream()
+                .collect(Collectors.toMap(
+                        HubEventHandler::getMessageType,
                         Function.identity()
                 ));
     }
@@ -52,14 +61,15 @@ public class EventController extends CollectorControllerGrpc.CollectorController
     @Override
     public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
         try {
-            hubEventService.handleHubEvent(request);
+            if (hubEventHandlers.containsKey(request.getPayloadCase())) {
+                hubEventHandlers.get(request.getPayloadCase()).handle(request);
+            } else {
+                throw new IllegalArgumentException("Не могу найти обработчик для события " + request.getPayloadCase());
+            }
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
         } catch (Exception e) {
-            log.error("Ошибка обработки hubEvent", e);
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.INTERNAL.withDescription(e.getMessage()).withCause(e)
-            ));
+            responseObserver.onError(new StatusRuntimeException(Status.fromThrowable(e)));
         }
     }
 }
