@@ -53,8 +53,14 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
                         c.setValue(0);
                     } else {
                         switch (p.getValueCase()) {
-                            case INT_VALUE -> c.setValue(p.getIntValue());
-                            case BOOL_VALUE -> c.setValue(p.getBoolValue() ? 1 : 0);
+                            case INT_VALUE -> {
+                                Integer intVal = p.getIntValue();
+                                c.setValue(intVal != null ? intVal : 0);
+                            }
+                            case BOOL_VALUE -> {
+                                Boolean boolVal = p.getBoolValue();
+                                c.setValue(boolVal != null && boolVal ? 1 : 0);
+                            }
                         }
                     }
                     return c;
