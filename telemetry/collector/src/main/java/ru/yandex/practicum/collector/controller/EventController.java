@@ -35,10 +35,7 @@ public class EventController extends CollectorControllerGrpc.CollectorController
         this.hubEventHandlers = hubEventHandlers.stream()
                 .collect(Collectors.toMap(
                         HubEventHandler::getMessageType,
-                        Function.identity(),
-                        (existing, replacement) -> {
-                            throw new IllegalStateException("Duplicate handler for message type " + existing.getMessageType());
-                        }
+                        Function.identity()
                 ));
     }
 
@@ -72,7 +69,10 @@ public class EventController extends CollectorControllerGrpc.CollectorController
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
         } catch (Exception e) {
-            responseObserver.onError(new StatusRuntimeException(Status.fromThrowable(e)));
+            log.error("Error processing hub event: {}", e.getMessage(), e);
+            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL
+                    .withDescription("Internal server error: " + e.getMessage())
+                    .withCause(e)));
         }
     }
 }
