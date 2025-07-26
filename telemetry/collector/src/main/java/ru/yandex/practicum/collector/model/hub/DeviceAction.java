@@ -22,5 +22,5 @@ public class DeviceAction {
     @NotNull
     ActionType type;
 
-    int value;
+    Integer value;
 }
