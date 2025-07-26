@@ -3,6 +3,7 @@ package ru.yandex.practicum.collector.service.handlers.hub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.collector.model.hub.DeviceAction;
+import ru.yandex.practicum.collector.model.hub.HubEvent;
 import ru.yandex.practicum.collector.model.hub.ScenarioAddedEvent;
 import ru.yandex.practicum.collector.model.hub.ScenarioCondition;
 import ru.yandex.practicum.collector.model.hub.enums.ActionType;
@@ -29,6 +30,8 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
 
     @Override
     public void handle(HubEventProto hubEventProto) {
+
+        HubEvent hubEvent;
 
         ScenarioAddedEventProto scenarioAddedEventProto = hubEventProto.getScenarioAdded();
 
@@ -71,7 +74,8 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
         scenarioAddedEvent.setHubId(hubEventProto.getHubId());
         scenarioAddedEvent.setTimestamp(timestamp);
 
-        hubEventService.processEvent(scenarioAddedEvent);
+        hubEvent = scenarioAddedEvent;
+
+        hubEventService.processEvent(hubEvent);
     }
 }
-

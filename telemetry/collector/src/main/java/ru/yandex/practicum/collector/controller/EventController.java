@@ -35,7 +35,10 @@ public class EventController extends CollectorControllerGrpc.CollectorController
         this.hubEventHandlers = hubEventHandlers.stream()
                 .collect(Collectors.toMap(
                         HubEventHandler::getMessageType,
-                        Function.identity()
+                        Function.identity(),
+                        (existing, replacement) -> {
+                            throw new IllegalStateException("Duplicate handler for message type " + existing.getMessageType());
+                        }
                 ));
     }
 
@@ -45,7 +48,9 @@ public class EventController extends CollectorControllerGrpc.CollectorController
             if (sensorEventHandlers.containsKey(request.getPayloadCase())) {
                 sensorEventHandlers.get(request.getPayloadCase()).handle(request);
             } else {
-                throw new IllegalArgumentException("Не могу найти обработчик для события " + request.getPayloadCase());
+                throw new IllegalArgumentException(
+                        String.format("Cannot find handler for sensor    %s", request.getPayloadCase())
+                );
             }
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
@@ -60,7 +65,9 @@ public class EventController extends CollectorControllerGrpc.CollectorController
             if (hubEventHandlers.containsKey(request.getPayloadCase())) {
                 hubEventHandlers.get(request.getPayloadCase()).handle(request);
             } else {
-                throw new IllegalArgumentException("Не могу найти обработчик для события " + request.getPayloadCase());
+                throw new IllegalArgumentException(
+                        String.format("Cannot find handler for event %s", request.getPayloadCase())
+                );
             }
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
