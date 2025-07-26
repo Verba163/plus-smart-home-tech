@@ -30,7 +30,7 @@ public class AggregationService {
             return newSnapshot;
         });
 
-        synchronized (hubSnapshot) { // если ожидается многопоточность обновления одного hubSnapshot
+        synchronized (hubSnapshot) {
             Map<String, SensorStateAvro> sensorsState = hubSnapshot.getSensorsState();
             SensorStateAvro oldState = sensorsState.get(sensorId);
 
