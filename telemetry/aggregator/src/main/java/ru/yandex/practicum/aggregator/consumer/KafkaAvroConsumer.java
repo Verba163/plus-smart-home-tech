@@ -5,7 +5,7 @@ import org.apache.kafka.clients.consumer.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.aggregator.deserializer.SensorEventDeserializer;
-import ru.yandex.practicum.collector.model.sensors.SensorEvent;
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
 import java.time.Duration;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Component
 public class KafkaAvroConsumer {
 
-    private final Consumer<String, SensorEvent> consumer;
+    private final Consumer<String, SensorEventAvro> consumer;
 
     public KafkaAvroConsumer(@Value("${topic.sensor-events}") String topic) {
         Properties config = new Properties();
@@ -39,8 +39,8 @@ public class KafkaAvroConsumer {
     private void consumeMessages() {
         try {
             while (true) {
-                ConsumerRecords<String, SensorEvent> records = consumer.poll(Duration.ofMillis(500));
-                for (ConsumerRecord<String, SensorEvent> record : records) {
+                ConsumerRecords<String, SensorEventAvro> records = consumer.poll(Duration.ofMillis(500));
+                for (ConsumerRecord<String, SensorEventAvro> record : records) {
                     log.info("Received message from partition {}, offset {}:\n{}\n",
                             record.partition(), record.offset(), record.value());
                 }
