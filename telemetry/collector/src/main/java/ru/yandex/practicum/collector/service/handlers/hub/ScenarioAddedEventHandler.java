@@ -72,11 +72,10 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
         scenarioAddedEvent.setConditions(scenarioConditions);
         scenarioAddedEvent.setActions(deviceActions);
 
-
         hubEvent = scenarioAddedEvent;
         hubEvent.setHubId(hubEventProto.getHubId());
         hubEvent.setTimestamp(timestamp);
 
-        hubEventService.processEvent(hubEvent);
+        hubEventService.processEvent(scenarioAddedEvent);
     }
 }
