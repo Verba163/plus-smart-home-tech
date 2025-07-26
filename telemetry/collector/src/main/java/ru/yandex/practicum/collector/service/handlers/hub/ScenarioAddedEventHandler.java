@@ -24,6 +24,7 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
 
     private final HubEventService hubEventService;
 
+
     @Override
     public HubEventProto.PayloadCase getMessageType() {
         return HubEventProto.PayloadCase.SCENARIO_ADDED;
@@ -49,18 +50,12 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
                     c.setSensorId(p.getSensorId());
                     c.setType(ConditionType.valueOf(p.getType().name()));
                     c.setOperation(ConditionOperation.valueOf(p.getOperation().name()));
-                    if (p.getValueCase() == ScenarioConditionProto.ValueCase.VALUE_NOT_SET) {
-                        c.setValue(0);
+                    if (p.getValueCase() == null || p.getValueCase() == ScenarioConditionProto.ValueCase.VALUE_NOT_SET) {
+                        c.setValue(null);
                     } else {
                         switch (p.getValueCase()) {
-                            case INT_VALUE -> {
-                                Integer intVal = p.getIntValue();
-                                c.setValue(intVal != null ? intVal : 0);
-                            }
-                            case BOOL_VALUE -> {
-                                Boolean boolVal = p.getBoolValue();
-                                c.setValue(boolVal != null && boolVal ? 1 : 0);
-                            }
+                            case INT_VALUE -> c.setValue(p.getIntValue());
+                            case BOOL_VALUE -> c.setValue(p.getBoolValue() ? 1 : 0);
                         }
                     }
                     return c;
