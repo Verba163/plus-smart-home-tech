@@ -17,7 +17,7 @@ public class AggregationService {
 
     private final Map<String, SensorsSnapshotAvro> snapshotsByHubId = new ConcurrentHashMap<>();
 
-    public Optional<SensorsSnapshotAvro> aggregateEvent(SensorEventAvro event) {
+    public  Optional<SensorsSnapshotAvro> aggregateEvent(SensorEventAvro event) {
 
         String hubId = event.getHubId();
         String sensorId = event.getId();
