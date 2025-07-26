@@ -24,7 +24,6 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
 
     private final HubEventService hubEventService;
 
-
     @Override
     public HubEventProto.PayloadCase getMessageType() {
         return HubEventProto.PayloadCase.SCENARIO_ADDED;
@@ -79,6 +78,6 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
 
         hubEvent.setHubId(hubEventProto.getHubId());
         hubEvent.setTimestamp(timestamp);
-        hubEventService.processEvent(hubEvent);
+        hubEventService.processEvent(model);
     }
 }
