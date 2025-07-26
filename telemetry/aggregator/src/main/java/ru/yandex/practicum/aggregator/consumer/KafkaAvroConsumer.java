@@ -1,5 +1,6 @@
 package ru.yandex.practicum.aggregator.consumer;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.*;
 import org.springframework.beans.factory.annotation.Value;
