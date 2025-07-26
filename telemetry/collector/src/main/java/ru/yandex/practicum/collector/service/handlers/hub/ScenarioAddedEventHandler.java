@@ -32,7 +32,6 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
         ScenarioAddedEventProto scenarioAddedEventProto = hubEventProto.getScenarioAdded();
 
         ScenarioAddedEvent scenarioAddedEvent = new ScenarioAddedEvent();
-        scenarioAddedEvent.setName(scenarioAddedEventProto.getName());
 
         List<ScenarioCondition> scenarioConditions = scenarioAddedEventProto.getConditionList().stream()
                 .map(conditionProto -> {
@@ -61,6 +60,7 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
 
         scenarioAddedEvent.setConditions(scenarioConditions);
         scenarioAddedEvent.setActions(deviceActions);
+        scenarioAddedEvent.setName(scenarioAddedEventProto.getName());
 
         hubEventService.processEvent(scenarioAddedEvent);
     }
