@@ -108,4 +108,11 @@
         </pluginManagement>
     </build>
 
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
 </project>
