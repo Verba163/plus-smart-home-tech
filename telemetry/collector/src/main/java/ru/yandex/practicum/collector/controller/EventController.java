@@ -6,7 +6,6 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
-import ru.yandex.practicum.collector.service.events.HubEventService;
 import ru.yandex.practicum.collector.service.handlers.hub.HubEventHandler;
 import ru.yandex.practicum.collector.service.handlers.sensors.SensorEventHandler;
 import ru.yandex.practicum.grpc.telemetry.collector.CollectorControllerGrpc;
@@ -23,14 +22,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EventController extends CollectorControllerGrpc.CollectorControllerImplBase {
 
-    private final HubEventService hubEventService;
     private final Map<SensorEventProto.PayloadCase, SensorEventHandler> sensorEventHandlers;
     private final Map<HubEventProto.PayloadCase, HubEventHandler> hubEventHandlers;
 
-    public EventController(HubEventService hubEventService,
-                           Set<SensorEventHandler> sensorEventHandlers,
+    public EventController(Set<SensorEventHandler> sensorEventHandlers,
                            Set<HubEventHandler> hubEventHandlers) {
-        this.hubEventService = hubEventService;
         this.sensorEventHandlers = sensorEventHandlers.stream()
                 .collect(Collectors.toMap(
                         SensorEventHandler::getMessageType,

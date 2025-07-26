@@ -12,6 +12,7 @@ import ru.yandex.practicum.collector.service.events.HubEventService;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.grpc.telemetry.event.ScenarioAddedEventProto;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,13 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
         ScenarioAddedEventProto scenarioAddedEventProto = hubEventProto.getScenarioAdded();
 
         ScenarioAddedEvent scenarioAddedEvent = new ScenarioAddedEvent();
+
+        scenarioAddedEvent.setName(scenarioAddedEventProto.getName());
+
+        Instant timestamp = Instant.ofEpochSecond(
+                hubEventProto.getTimestamp().getSeconds(),
+                hubEventProto.getTimestamp().getNanos()
+        );
 
         List<ScenarioCondition> scenarioConditions = scenarioAddedEventProto.getConditionList().stream()
                 .map(conditionProto -> {
@@ -58,10 +66,10 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
                 })
                 .collect(Collectors.toList());
 
-        scenarioAddedEvent.setHubId(hubEventProto.getHubId());
         scenarioAddedEvent.setConditions(scenarioConditions);
         scenarioAddedEvent.setActions(deviceActions);
-        scenarioAddedEvent.setName(scenarioAddedEventProto.getName());
+        scenarioAddedEvent.setHubId(hubEventProto.getHubId());
+        scenarioAddedEvent.setTimestamp(timestamp);
 
         hubEventService.processEvent(scenarioAddedEvent);
     }

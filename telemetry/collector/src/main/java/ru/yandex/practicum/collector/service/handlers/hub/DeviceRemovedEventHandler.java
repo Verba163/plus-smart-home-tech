@@ -27,6 +27,7 @@ public class DeviceRemovedEventHandler implements HubEventHandler {
         DeviceRemovedEventProto deviceRemoved = hubEventProto.getDeviceRemoved();
         DeviceRemovedEvent deviceRemovedEvent = new DeviceRemovedEvent();
         deviceRemovedEvent.setId(deviceRemoved.getId());
+
         Instant timestamp = Instant.ofEpochSecond(
                 hubEventProto.getTimestamp().getSeconds(),
                 hubEventProto.getTimestamp().getNanos()
