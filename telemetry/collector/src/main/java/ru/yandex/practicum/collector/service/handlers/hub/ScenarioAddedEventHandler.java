@@ -12,6 +12,7 @@ import ru.yandex.practicum.collector.model.hub.enums.ConditionType;
 import ru.yandex.practicum.collector.service.events.HubEventService;
 import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 import ru.yandex.practicum.grpc.telemetry.event.ScenarioAddedEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.ScenarioConditionProto;
 
 import java.time.Instant;
 import java.util.List;
@@ -33,49 +34,50 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
 
         HubEvent hubEvent;
 
-        ScenarioAddedEventProto scenarioAddedEventProto = hubEventProto.getScenarioAdded();
-
-        ScenarioAddedEvent scenarioAddedEvent = new ScenarioAddedEvent();
-
-        scenarioAddedEvent.setName(scenarioAddedEventProto.getName());
+        ScenarioAddedEventProto s = hubEventProto.getScenarioAdded();
+        ScenarioAddedEvent model = new ScenarioAddedEvent();
+        model.setName(s.getName());
 
         Instant timestamp = Instant.ofEpochSecond(
                 hubEventProto.getTimestamp().getSeconds(),
                 hubEventProto.getTimestamp().getNanos()
         );
 
-        List<ScenarioCondition> scenarioConditions = scenarioAddedEventProto.getConditionList().stream()
-                .map(conditionProto -> {
-                    ScenarioCondition scenarioCondition = new ScenarioCondition();
-                    scenarioCondition.setSensorId(conditionProto.getSensorId());
-                    scenarioCondition.setType(ConditionType.valueOf(conditionProto.getType().name()));
-                    scenarioCondition.setOperation(ConditionOperation.valueOf(conditionProto.getOperation().name()));
-
-                    switch (conditionProto.getValueCase()) {
-                        case INT_VALUE -> scenarioCondition.setValue(conditionProto.getIntValue());
-                        case BOOL_VALUE -> scenarioCondition.setValue(conditionProto.getBoolValue() ? 1 : 0);
+        List<ScenarioCondition> mappedConditions = s.getConditionList().stream()
+                .map(p -> {
+                    ScenarioCondition c = new ScenarioCondition();
+                    c.setSensorId(p.getSensorId());
+                    c.setType(ConditionType.valueOf(p.getType().name()));
+                    c.setOperation(ConditionOperation.valueOf(p.getOperation().name()));
+                    if (p.getValueCase() == ScenarioConditionProto.ValueCase.VALUE_NOT_SET) {
+                        c.setValue(0);
+                    } else {
+                        switch (p.getValueCase()) {
+                            case INT_VALUE -> c.setValue(p.getIntValue());
+                            case BOOL_VALUE -> c.setValue(p.getBoolValue() ? 1 : 0);
+                        }
                     }
-                    return scenarioCondition;
+                    return c;
                 })
                 .collect(Collectors.toList());
 
-        List<DeviceAction> deviceActions = scenarioAddedEventProto.getActionList().stream()
-                .map(actionProto -> {
-                    DeviceAction deviceAction = new DeviceAction();
-                    deviceAction.setSensorId(actionProto.getSensorId());
-                    deviceAction.setType(ActionType.valueOf(actionProto.getType().name()));
-                    deviceAction.setValue(actionProto.hasValue() ? actionProto.getValue() : null);
-                    return deviceAction;
+        List<DeviceAction> mappedActions = s.getActionList().stream()
+                .map(p -> {
+                    DeviceAction a = new DeviceAction();
+                    a.setSensorId(p.getSensorId());
+                    a.setType(ActionType.valueOf(p.getType().name()));
+                    a.setValue(p.hasValue() ? p.getValue() : null);
+                    return a;
                 })
                 .collect(Collectors.toList());
 
-        scenarioAddedEvent.setConditions(scenarioConditions);
-        scenarioAddedEvent.setActions(deviceActions);
+        model.setConditions(mappedConditions);
+        model.setActions(mappedActions);
 
-        hubEvent = scenarioAddedEvent;
+        hubEvent = model;
+
         hubEvent.setHubId(hubEventProto.getHubId());
         hubEvent.setTimestamp(timestamp);
-
-        hubEventService.processEvent(scenarioAddedEvent);
+        hubEventService.processEvent(hubEvent);
     }
 }

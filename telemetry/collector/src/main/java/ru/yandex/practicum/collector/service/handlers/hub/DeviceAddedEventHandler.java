@@ -42,6 +42,7 @@ public class DeviceAddedEventHandler implements HubEventHandler {
 
         hubEvent = deviceAddedEvent;
         hubEvent.setHubId(hubEventProto.getHubId());
+
         hubEventService.processEvent(deviceAddedEvent);
 
     }
