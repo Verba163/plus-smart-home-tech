@@ -26,7 +26,7 @@ public class HubEventService {
 
     public void processEvent(HubEvent hubEvent) {
         try {
-            SpecificRecordBase payload = mapperFactory.map(hubEvent);
+            SpecificRecordBase payload = mapperFactory.mapToAvro(hubEvent);
 
             HubEventAvro avro = HubEventAvro.newBuilder()
                     .setHubId(hubEvent.getHubId())
@@ -40,4 +40,5 @@ public class HubEventService {
             log.error("Error processing hub event: {}", hubEvent.getHubId(), e);
         }
     }
+
 }
