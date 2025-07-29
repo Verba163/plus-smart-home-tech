@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ScenarioEventHandlers implements HubEventHandler<ScenarioAddedEventAvro> {
+public class ScenarioAddedEventHandlers implements HubEventHandler<ScenarioAddedEventAvro> {
 
     private final ActionRepository actionRepository;
     private final ConditionRepository conditionRepository;

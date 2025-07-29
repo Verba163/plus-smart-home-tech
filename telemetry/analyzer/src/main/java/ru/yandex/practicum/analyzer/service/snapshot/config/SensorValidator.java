@@ -15,6 +15,7 @@ public class SensorValidator {
 
     public void validateSensor(String hubId, String sensorId) {
         try {
+            log.debug("Validating sensor {} in hub {}", sensorId, hubId);
             Sensor sensor = sensorRepository.findById(sensorId)
                     .orElseThrow(() -> new IllegalArgumentException("Sensor not found: " + sensorId));
             if (!hubId.equals(sensor.getHubId())) {
@@ -23,9 +24,8 @@ public class SensorValidator {
                         sensorId, hubId, sensor.getHubId()));
             }
         } catch (Exception e) {
-            log.error("Error validating sensor existence in database: {}", e.getMessage(), e);
+            log.error("Validation error for sensor {} in hub {}: {}", sensorId, hubId, e.getMessage(), e);
             throw e;
         }
     }
 }
-

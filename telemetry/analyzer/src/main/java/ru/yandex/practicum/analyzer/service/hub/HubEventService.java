@@ -22,7 +22,7 @@ public class HubEventService {
     public void handle(HubEventAvro hubEvent) {
         try {
             Object payload = hubEvent.getPayload();
-            HubEventHandler handler = handlers.get(payload.getClass());
+            HubEventHandler<Object> handler = (HubEventHandler<Object>) handlers.get(payload.getClass());
             if (handler != null) {
                 handler.handle(hubEvent.getHubId(), payload);
             } else {
