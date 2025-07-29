@@ -33,9 +33,6 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, HubEventDeserializer.class.getName());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100);
-        props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 3_072_000);
-        props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 307200);
 
         this.hubEventConsumer = new KafkaConsumer<>(props);
         return this.hubEventConsumer;
@@ -51,9 +48,6 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class.getName());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100);
-        props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 3_072_000);
-        props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 307200);
 
         this.sensorsSnapshotConsumer = new KafkaConsumer<>(props);
         return this.sensorsSnapshotConsumer;

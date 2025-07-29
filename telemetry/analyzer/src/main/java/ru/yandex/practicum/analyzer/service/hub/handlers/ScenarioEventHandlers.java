@@ -17,7 +17,9 @@ import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -50,6 +52,7 @@ public class ScenarioEventHandlers implements HubEventHandler<ScenarioAddedEvent
                     .actions(new HashMap<>())
                     .build();
 
+            List<Condition> conditionsToSave = new ArrayList<>();
             for (ScenarioConditionAvro conditionAvro : event.getConditions()) {
                 Integer value = conditionValidationService.getConditionValue(conditionAvro);
 
@@ -58,20 +61,21 @@ public class ScenarioEventHandlers implements HubEventHandler<ScenarioAddedEvent
                         .operation(enumMappers.ConditionOperationMapper(conditionAvro.getOperation()))
                         .value(value)
                         .build();
-                conditionRepository.save(condition);
-
+                conditionsToSave.add(condition);
                 scenario.getConditions().put(conditionAvro.getSensorId(), condition);
             }
+            conditionRepository.saveAll(conditionsToSave);
 
+            List<Action> actionsToSave = new ArrayList<>();
             for (DeviceActionAvro actionAvro : event.getActions()) {
                 Action action = Action.builder()
                         .type(enumMappers.ActionTypeMapper(actionAvro.getType()))
                         .value(actionAvro.getValue())
                         .build();
-                actionRepository.save(action);
-
+                actionsToSave.add(action);
                 scenario.getActions().put(actionAvro.getSensorId(), action);
             }
+            actionRepository.saveAll(actionsToSave);
 
             scenarioRepository.save(scenario);
             log.info("Scenario added: {}", scenario);
