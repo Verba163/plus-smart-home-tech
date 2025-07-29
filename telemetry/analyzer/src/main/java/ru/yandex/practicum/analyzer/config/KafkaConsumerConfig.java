@@ -12,16 +12,22 @@ import ru.yandex.practicum.analyzer.deserializer.SensorEventDeserializer;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
+import javax.annotation.PreDestroy;
 import java.util.Properties;
+import java.util.UUID;
 
 @Slf4j
 @Configuration
 public class KafkaConsumerConfig {
 
+    private KafkaConsumer<String, HubEventAvro> hubEventConsumer;
+    private KafkaConsumer<String, SensorsSnapshotAvro> sensorsSnapshotConsumer;
+
     @Bean
     public KafkaConsumer<String, HubEventAvro> createHubEventConsumer(
             @Value("${kafka.bootstrap-servers}") String bootstrapServers) {
-        Properties props = buildCommonConsumerProperties(bootstrapServers);
+        String uniqueId = UUID.randomUUID().toString();
+        Properties props = buildCommonConsumerProperties(bootstrapServers, uniqueId);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "hub-analyzer-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, HubEventDeserializer.class.getName());
@@ -31,14 +37,15 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 3_072_000);
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 307200);
 
-        log.info("Created Kafka consumer for Hub Events: {}", bootstrapServers);
-        return new KafkaConsumer<>(props);
+        this.hubEventConsumer = new KafkaConsumer<>(props);
+        return this.hubEventConsumer;
     }
 
     @Bean
     public KafkaConsumer<String, SensorsSnapshotAvro> createSensorsSnapshotConsumer(
             @Value("${kafka.bootstrap-servers}") String bootstrapServers) {
-        Properties props = buildCommonConsumerProperties(bootstrapServers);
+        String uniqueId = UUID.randomUUID().toString();
+        Properties props = buildCommonConsumerProperties(bootstrapServers, uniqueId);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "snapshot-analyzer-group");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class.getName());
@@ -48,26 +55,26 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, 3_072_000);
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 307200);
 
-        log.info("Created Kafka consumer for Sensors Snapshots: {}", bootstrapServers);
-        return new KafkaConsumer<>(props);
+        this.sensorsSnapshotConsumer = new KafkaConsumer<>(props);
+        return this.sensorsSnapshotConsumer;
     }
 
-    private Properties buildCommonConsumerProperties(String bootstrapServers) {
+    private Properties buildCommonConsumerProperties(String bootstrapServers, String clientIdSuffix) {
         Properties properties = new Properties();
-        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "AnalyzerClient");
+        properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "AnalyzerClient-" + clientIdSuffix);
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return properties;
     }
 
-    @Bean
-    public String getSnapshotTopic(@Value("${kafka.topic.snapshot}") String snapshotTopic) {
-        log.info("Configured topic for hub snapshots: {}", snapshotTopic);
-        return snapshotTopic;
-    }
-
-    @Bean
-    public String getHubTopic(@Value("${kafka.topic.hub}") String hubTopic) {
-        log.info("Configured topic for sensors: {}", hubTopic);
-        return hubTopic;
+    @PreDestroy
+    public void cleanup() {
+        if (hubEventConsumer != null) {
+            hubEventConsumer.close();
+            hubEventConsumer = null;
+        }
+        if (sensorsSnapshotConsumer != null) {
+            sensorsSnapshotConsumer.close();
+            sensorsSnapshotConsumer = null;
+        }
     }
 }
