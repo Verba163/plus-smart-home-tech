@@ -77,4 +77,16 @@ public class KafkaConsumerConfig {
             sensorsSnapshotConsumer = null;
         }
     }
+
+    @Bean
+    public String getSnapshotTopic(@Value("${kafka.topic.snapshot}") String snapshotTopic) {
+        log.info("Configured topic for hub snapshots: {}", snapshotTopic);
+        return snapshotTopic;
+    }
+
+    @Bean
+    public String getHubTopic(@Value("${kafka.topic.hub}") String hubTopic) {
+        log.info("Configured topic for sensors: {}", hubTopic);
+        return hubTopic;
+    }
 }
