@@ -75,6 +75,7 @@ public class ScenarioAddedEventHandlers implements HubEventHandler<ScenarioAdded
                 actionsToSave.add(action);
                 scenario.getActions().put(actionAvro.getSensorId(), action);
             }
+
             actionRepository.saveAll(actionsToSave);
 
             scenarioRepository.save(scenario);
