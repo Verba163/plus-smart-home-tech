@@ -1,6 +1,5 @@
 package ru.yandex.practicum.analyzer.consumer;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -8,6 +7,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.analyzer.service.hub.HubEventService;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
@@ -19,14 +19,20 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class HubEventProcessor implements Runnable {
 
     private static final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
-
     private final KafkaConsumer<String, HubEventAvro> kafkaHubEventConsumer;
     private final String hubTopic;
     private final HubEventService hubEventService;
+
+    public HubEventProcessor(KafkaConsumer<String, HubEventAvro> kafkaHubEventConsumer,
+                             @Qualifier("getHubTopic") String hubTopic, HubEventService hubEventService) {
+        this.kafkaHubEventConsumer = kafkaHubEventConsumer;
+        this.hubTopic = hubTopic;
+        this.hubEventService = hubEventService;
+    }
+
 
     @Override
     public void run() {
