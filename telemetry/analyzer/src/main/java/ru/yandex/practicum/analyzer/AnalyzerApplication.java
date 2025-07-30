@@ -11,13 +11,10 @@ import ru.yandex.practicum.analyzer.consumer.SnapshotProcessor;
 @ConfigurationPropertiesScan
 public class AnalyzerApplication {
     public static void main(String[] args) {
-        ConfigurableApplicationContext context =
-                SpringApplication.run(AnalyzerApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(AnalyzerApplication.class, args);
 
-        final HubEventProcessor hubEventProcessor =
-                context.getBean(HubEventProcessor.class);
-        SnapshotProcessor snapshotProcessor =
-                context.getBean(SnapshotProcessor.class);
+        HubEventProcessor hubEventProcessor = context.getBean(HubEventProcessor.class);
+        SnapshotProcessor snapshotProcessor = context.getBean(SnapshotProcessor.class);
 
         // запускаем в отдельном потоке обработчик событий
         // от пользовательских хабов

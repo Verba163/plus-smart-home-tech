@@ -3,7 +3,7 @@ package ru.yandex.practicum.analyzer.grpc;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.analyzer.model.Action;
 import ru.yandex.practicum.grpc.telemetry.event.ActionTypeProto;
 import ru.yandex.practicum.grpc.telemetry.event.DeviceActionProto;
@@ -13,7 +13,7 @@ import ru.yandex.practicum.grpc.telemetry.hubrouter.HubRouterControllerGrpc;
 import java.time.Instant;
 
 @Slf4j
-@Component
+@Service
 public class GrpcClient {
 
     private final HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient;

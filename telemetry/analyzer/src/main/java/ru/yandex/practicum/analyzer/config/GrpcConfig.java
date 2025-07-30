@@ -10,14 +10,12 @@ import ru.yandex.practicum.grpc.telemetry.hubrouter.HubRouterControllerGrpc;
 public class GrpcConfig {
 
     @Bean
-    public ManagedChannel hubRouterChannel() {
-        return ManagedChannelBuilder.forAddress("localhost", 59090)
+    public HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterStub() {
+        ManagedChannel channel = ManagedChannelBuilder
+                .forAddress("localhost", 59090)
                 .usePlaintext()
                 .build();
-    }
 
-    @Bean
-    public HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterStub(ManagedChannel channel) {
         return HubRouterControllerGrpc.newBlockingStub(channel);
     }
 }
