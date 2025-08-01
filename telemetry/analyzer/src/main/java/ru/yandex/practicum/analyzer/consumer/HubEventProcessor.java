@@ -1,5 +1,6 @@
 package ru.yandex.practicum.analyzer.consumer;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -22,17 +23,18 @@ import java.util.Map;
 public class HubEventProcessor implements Runnable {
 
     private static final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
+
     private final KafkaConsumer<String, HubEventAvro> kafkaHubEventConsumer;
     private final String hubTopic;
     private final HubEventService hubEventService;
 
     public HubEventProcessor(KafkaConsumer<String, HubEventAvro> kafkaHubEventConsumer,
-                             @Qualifier("getHubTopic") String hubTopic, HubEventService hubEventService) {
+                             @Qualifier("hubTopic") String hubTopic,
+                             HubEventService hubEventService) {
         this.kafkaHubEventConsumer = kafkaHubEventConsumer;
         this.hubTopic = hubTopic;
         this.hubEventService = hubEventService;
     }
-
 
     @Override
     public void run() {

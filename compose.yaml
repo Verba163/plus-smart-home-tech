@@ -4,8 +4,8 @@ services:
     hostname: kafka
     container_name: kafka
     ports:
-      - "9092:9092" # for client connections
-      - "9101:9101" # JMX
+      - "9092:9092"
+      - "9101:9101"
     restart: unless-stopped
     environment:
       KAFKA_NODE_ID: 1
@@ -48,10 +48,10 @@ services:
 
   analyzer-db:
     image: postgres:16.1
-    container_name: postgres-analyzer-db
+    container_name: telemetry_analyzer
     ports:
       - "6543:5432"
     environment:
       - POSTGRES_PASSWORD=12345
-      - POSTGRES_USER=dbuser
-      - POSTGRES_DB=analyzer
+      - POSTGRES_USER=shareit
+      - POSTGRES_DB=telemetry_analyzer

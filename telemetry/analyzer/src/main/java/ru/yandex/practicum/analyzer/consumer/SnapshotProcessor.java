@@ -27,14 +27,12 @@ public class SnapshotProcessor {
     private final String snapshotTopic;
     private final SnapshotService snapshotService;
 
-    public SnapshotProcessor(
-            KafkaConsumer<String, SensorsSnapshotAvro> kafkaSensorsSnapshotConsumer,
-            SnapshotService snapshotService,
-            @Qualifier("getSnapshotTopic") String snapshotTopic
-    ) {
+    public SnapshotProcessor(KafkaConsumer<String, SensorsSnapshotAvro> kafkaSensorsSnapshotConsumer,
+                             @Qualifier("snapshotTopic") String snapshotTopic,
+                             SnapshotService snapshotService) {
         this.kafkaSensorsSnapshotConsumer = kafkaSensorsSnapshotConsumer;
-        this.snapshotService = snapshotService;
         this.snapshotTopic = snapshotTopic;
+        this.snapshotService = snapshotService;
     }
 
     public void start() {

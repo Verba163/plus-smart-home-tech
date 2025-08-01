@@ -17,14 +17,12 @@ import ru.yandex.practicum.kafka.telemetry.event.DeviceActionAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioConditionAvro;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ScenarioAddedEventHandlers implements HubEventHandler<ScenarioAddedEventAvro> {
+public class ScenarioEventHandlers implements HubEventHandler<ScenarioAddedEventAvro> {
 
     private final ActionRepository actionRepository;
     private final ConditionRepository conditionRepository;
@@ -52,7 +50,6 @@ public class ScenarioAddedEventHandlers implements HubEventHandler<ScenarioAdded
                     .actions(new HashMap<>())
                     .build();
 
-            List<Condition> conditionsToSave = new ArrayList<>();
             for (ScenarioConditionAvro conditionAvro : event.getConditions()) {
                 Integer value = conditionValidationService.getConditionValue(conditionAvro);
 
@@ -61,22 +58,20 @@ public class ScenarioAddedEventHandlers implements HubEventHandler<ScenarioAdded
                         .operation(enumMappers.ConditionOperationMapper(conditionAvro.getOperation()))
                         .value(value)
                         .build();
-                conditionsToSave.add(condition);
+                conditionRepository.save(condition);
+
                 scenario.getConditions().put(conditionAvro.getSensorId(), condition);
             }
-            conditionRepository.saveAll(conditionsToSave);
 
-            List<Action> actionsToSave = new ArrayList<>();
             for (DeviceActionAvro actionAvro : event.getActions()) {
                 Action action = Action.builder()
                         .type(enumMappers.ActionTypeMapper(actionAvro.getType()))
                         .value(actionAvro.getValue())
                         .build();
-                actionsToSave.add(action);
+                actionRepository.save(action);
+
                 scenario.getActions().put(actionAvro.getSensorId(), action);
             }
-
-            actionRepository.saveAll(actionsToSave);
 
             scenarioRepository.save(scenario);
             log.info("Scenario added: {}", scenario);

@@ -20,37 +20,22 @@ public class ScenarioChecker {
 
     public void executeScenario(Scenario scenario, Map<String, SensorStateAvro> sensorsState, Instant timestamp) {
         try {
-            log.info("Evaluating scenario '{}' for hub {}", scenario.getName(), scenario.getHubId());
-
             boolean allConditionsMet = scenario.getConditions().entrySet().stream()
                     .allMatch(entry -> {
                         String sensorId = entry.getKey();
                         Condition condition = entry.getValue();
                         SensorStateAvro state = sensorsState.get(sensorId);
-                        if (state == null) {
-                            log.warn("Sensor {} not found in current state for scenario '{}'", sensorId, scenario.getName());
-                            return false;
-                        }
-                        try {
-                            return conditionChecker.checkCondition(condition, state.getData());
-                        } catch (Exception e) {
-                            log.error("Error checking condition for sensor {}: {}", sensorId, e.getMessage(), e);
-                            return false;
-                        }
+                        return state != null && conditionChecker.checkCondition(condition, state.getData());
                     });
 
             if (allConditionsMet) {
-                scenario.getActions().forEach((sensorId, action) -> {
-                    try {
-                        actionExecutor.executeAction(sensorId, action, scenario.getHubId(), scenario.getName(), timestamp);
-                    } catch (Exception e) {
-                        log.error("Error executing action for sensor {}: {}", sensorId, e.getMessage(), e);
-                    }
-                });
+                scenario.getActions().forEach((sensorId, action) ->
+                        actionExecutor.executeAction(sensorId, action, scenario.getHubId(), scenario.getName(), timestamp)
+                );
                 log.info("Scenario '{}' executed for hub {}", scenario.getName(), scenario.getHubId());
             }
         } catch (Exception e) {
-            log.error("Unexpected error while evaluating scenario '{}': {}", scenario.getName(), e.getMessage(), e);
+            log.error("Error while evaluating scenario conditions: {}", e.getMessage(), e);
         }
     }
 }

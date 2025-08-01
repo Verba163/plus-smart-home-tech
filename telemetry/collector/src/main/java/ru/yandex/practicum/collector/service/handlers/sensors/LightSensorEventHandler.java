@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.collector.model.sensors.LightSensorEvent;
 import ru.yandex.practicum.collector.model.sensors.SensorEvent;
 import ru.yandex.practicum.collector.service.sensors.SensorsEventService;
+
 import ru.yandex.practicum.grpc.telemetry.event.LightSensorProto;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 

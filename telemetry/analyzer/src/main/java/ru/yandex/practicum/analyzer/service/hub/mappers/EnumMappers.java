@@ -24,7 +24,7 @@ public class EnumMappers {
     public ConditionOperation ConditionOperationMapper(ConditionOperationAvro avroOperation) {
         return switch (avroOperation) {
             case EQUALS -> ConditionOperation.EQUALS;
-            case GREATER_THAN -> ConditionOperation.GREATER_THAN;
+            case GREATER_THAN -> ConditionOperation.BIGGER_THAN;
             case LOWER_THAN -> ConditionOperation.LOWER_THAN;
         };
     }
