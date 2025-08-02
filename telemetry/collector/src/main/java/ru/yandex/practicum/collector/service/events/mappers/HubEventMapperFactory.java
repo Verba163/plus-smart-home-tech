@@ -11,12 +11,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HubEventMapperFactory {
 
-
     private final List<HubEventMapper> mappers;
 
     public SpecificRecordBase mapToAvro(HubEvent event) {
         return mappers.stream()
-                .filter(mapper -> mapper.supports(event.getType()))
+                .filter(m -> m.supports(event.getType()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("Unknown sensor type: %s", event.getType())

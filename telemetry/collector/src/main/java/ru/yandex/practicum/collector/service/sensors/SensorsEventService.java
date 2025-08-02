@@ -13,6 +13,7 @@ import ru.yandex.practicum.collector.model.sensors.SensorEvent;
 import ru.yandex.practicum.collector.service.sensors.mappers.SensorEventMapperFactory;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 
 @Slf4j
@@ -37,6 +38,7 @@ public class SensorsEventService {
     }
 
     private SensorEventAvro mapToAvro(SensorEvent sensorEvent) {
+
         long timestamp = (sensorEvent.getTimestamp() != null)
                 ? sensorEvent.getTimestamp().toEpochMilli()
                 : Instant.now().toEpochMilli();
