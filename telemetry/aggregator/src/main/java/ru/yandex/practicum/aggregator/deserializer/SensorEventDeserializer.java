@@ -9,9 +9,4 @@ public class SensorEventDeserializer extends BaseAvroDeserializer<SensorEventAvr
     public SensorEventDeserializer() {
         super(SensorEventAvro.class, SensorEventAvro.getClassSchema());
     }
-
-    @Override
-    public SensorEventAvro deserialize(String topic, byte[] data) {
-        return super.deserialize(topic, data);
-    }
 }
