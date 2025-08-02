@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="proto-schemas" />
+        <module name="avro-schemas" />
+        <module name="collector" />
+        <module name="analyzer" />
+        <module name="aggregator" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="aggregator" options="-parameters" />
+      <module name="analyzer" options="-parameters" />
+      <module name="avro-schemas" options="-parameters" />
+      <module name="collector" options="-parameters" />
+      <module name="proto-schemas" options="-parameters" />
+      <module name="serialization" options="" />
+      <module name="telemetry" options="" />
+    </option>
+  </component>
+</project>

@@ -19,7 +19,7 @@ public class ConditionChecker {
 
         return switch (condition.getOperation()) {
             case EQUALS -> sensorValue.equals(condition.getValue());
-            case BIGGER_THAN -> sensorValue > condition.getValue();
+            case GREATER_THAN -> sensorValue > condition.getValue();
             case LOWER_THAN -> sensorValue < condition.getValue();
         };
     }

@@ -4,38 +4,37 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.analyzer.service.hub.handlers.HubEventHandler;
+import ru.yandex.practicum.analyzer.service.hub.handlers.DeviceAddedEventHandler;
+import ru.yandex.practicum.analyzer.service.hub.handlers.DeviceRemovedEventHandler;
+import ru.yandex.practicum.analyzer.service.hub.handlers.ScenarioAddedEventHandlers;
+import ru.yandex.practicum.analyzer.service.hub.handlers.ScenarioRemovedEventHandler;
 import ru.yandex.practicum.kafka.telemetry.event.*;
-
-import java.util.Map;
 
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class HubEventService {
-
-    private final Map<Class<?>, HubEventHandler<?>> handlers;
+    private final DeviceAddedEventHandler deviceAddedEventHandler;
+    private final DeviceRemovedEventHandler deviceRemovedEventHandler;
+    private final ScenarioAddedEventHandlers scenarioAddedEventHandlers;
+    private final ScenarioRemovedEventHandler scenarioRemovedEventHandler;
 
     @Transactional
-    @SuppressWarnings("unchecked")
     public void handle(HubEventAvro hubEvent) {
         try {
             Object payload = hubEvent.getPayload();
-            HubEventHandler handler = handlers.get(payload.getClass());
-            if (handler != null) {
-                handler.handle(hubEvent.getHubId(), payload);
-            } else {
-                log.info("Unknown event type: {}", payload.getClass().getName());
+            switch (payload) {
+                case DeviceAddedEventAvro event -> deviceAddedEventHandler.handle(hubEvent.getHubId(), event);
+                case DeviceRemovedEventAvro event -> deviceRemovedEventHandler.handle(hubEvent.getHubId(), event);
+                case ScenarioAddedEventAvro event -> scenarioAddedEventHandlers.handle(hubEvent.getHubId(), event);
+                case ScenarioRemovedEventAvro event -> scenarioRemovedEventHandler.handle(hubEvent.getHubId(), event);
+                default -> log.info("Unknown event type: {}", payload.getClass().getName());
             }
         } catch (Exception e) {
             log.error("Unexpected error while processing event {}: {}", hubEvent, e.getMessage(), e);
         }
     }
 }
-
-
-
-
 
 

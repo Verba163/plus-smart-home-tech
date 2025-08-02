@@ -1,0 +1,12 @@
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\producer\SensorsSnapshotProducer.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\config\KafkaPropertiesConfig.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\deserializer\HubEventDeserializer.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\deserializer\SensorEventDeserializer.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\consumer\SensorEventHandler.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\AggregatorApplication.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\config\KafkaClientConfig.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\consumer\SensorEventConsumerRunner.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\deserializer\BaseAvroDeserializer.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\deserializer\SensorsSnapshotDeserializer.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\service\AggregationService.java
+C:\Users\4Java\IdeaProjects\plus-smart-home-tech\telemetry\aggregator\src\main\java\ru\yandex\practicum\aggregator\serializer\GeneralAvroSerializer.java

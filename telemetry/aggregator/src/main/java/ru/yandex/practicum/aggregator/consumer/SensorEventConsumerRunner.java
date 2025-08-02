@@ -16,14 +16,13 @@ public class SensorEventConsumerRunner {
 
     private final SensorEventHandler eventHandler;
     private final KafkaConsumer<String, SensorEventAvro> consumer;
-    private static final String TOPIC = "telemetry.sensors.v1";
     private static final Duration POLL_TIMEOUT = Duration.ofMillis(1000);
 
     public void start() {
         Runtime.getRuntime().addShutdownHook(new Thread(consumer::wakeup));
 
         try {
-            consumer.subscribe(List.of(TOPIC));
+            consumer.subscribe(List.of("telemetry.sensors.v1"));
             while (true) {
                 ConsumerRecords<String, SensorEventAvro> records = consumer.poll(POLL_TIMEOUT);
                 eventHandler.handle(records);

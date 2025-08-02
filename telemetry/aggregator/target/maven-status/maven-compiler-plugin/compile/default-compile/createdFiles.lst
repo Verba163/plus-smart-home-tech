@@ -1,0 +1,12 @@
+ru\yandex\practicum\aggregator\consumer\SensorEventConsumerRunner.class
+ru\yandex\practicum\aggregator\service\AggregationService.class
+ru\yandex\practicum\aggregator\deserializer\SensorEventDeserializer.class
+ru\yandex\practicum\aggregator\AggregatorApplication.class
+ru\yandex\practicum\aggregator\config\KafkaClientConfig.class
+ru\yandex\practicum\aggregator\producer\SensorsSnapshotProducer.class
+ru\yandex\practicum\aggregator\deserializer\BaseAvroDeserializer.class
+ru\yandex\practicum\aggregator\serializer\GeneralAvroSerializer.class
+ru\yandex\practicum\aggregator\config\KafkaPropertiesConfig.class
+ru\yandex\practicum\aggregator\deserializer\HubEventDeserializer.class
+ru\yandex\practicum\aggregator\consumer\SensorEventHandler.class
+ru\yandex\practicum\aggregator\deserializer\SensorsSnapshotDeserializer.class
