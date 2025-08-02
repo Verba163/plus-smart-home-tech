@@ -28,6 +28,7 @@ public class SensorEventConsumerRunner {
                 eventHandler.handle(records);
             }
         } catch (WakeupException ignored) {
+
         } finally {
             eventHandler.shutdown();
         }
