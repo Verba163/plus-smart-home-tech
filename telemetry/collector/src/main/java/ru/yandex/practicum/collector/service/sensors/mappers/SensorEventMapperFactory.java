@@ -15,7 +15,7 @@ public class SensorEventMapperFactory {
 
     public SpecificRecord mapToAvro(SensorEvent event) {
         return mappers.stream()
-                .filter(mapper -> mapper.supports(event.getType()))
+                .filter(m -> m.supports(event.getType()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("Unknown sensor type: %s", event.getType())

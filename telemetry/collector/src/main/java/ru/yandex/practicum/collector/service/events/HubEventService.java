@@ -40,4 +40,5 @@ public class HubEventService {
             log.error("Error processing hub event: {}", hubEvent.getHubId(), e);
         }
     }
+
 }
