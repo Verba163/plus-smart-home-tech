@@ -17,7 +17,6 @@ import ru.yandex.practicum.collector.model.hub.enums.ConditionType;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ScenarioCondition {
 
-
     @NotBlank
     String sensorId;
 
