@@ -1,6 +1,6 @@
 spring:
   application:
-    name: aggregator
+    name: collector
   config:
     import: "configserver:"
   cloud:

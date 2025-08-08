@@ -8,10 +8,10 @@ import ru.yandex.practicum.aggregator.consumer.SensorEventConsumerRunner;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class AggregatorApplication {
+public class Aggregator {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(AggregatorApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(Aggregator.class, args);
         SensorEventConsumerRunner aggregator = context.getBean(SensorEventConsumerRunner.class);
         aggregator.start();
     }
