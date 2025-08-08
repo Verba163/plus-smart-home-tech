@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.yandex.practicum.analyzer.deserializer.HubEventDeserializer;
@@ -17,6 +18,7 @@ import java.util.Properties;
 
 @Slf4j
 @Configuration
+@ConfigurationProperties(prefix = "analyzer.kafka")
 public class KafkaClientConfig {
 
     @Bean

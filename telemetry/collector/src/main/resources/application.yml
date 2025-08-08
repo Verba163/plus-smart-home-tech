@@ -2,7 +2,7 @@ spring:
   application:
     name: collector
   config:
-    import: configserver:http://localhost:8888
+    import: configserver:http://localhost:9191
   cloud:
     config:
       fail-fast: true
