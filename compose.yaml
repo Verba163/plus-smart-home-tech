@@ -55,3 +55,33 @@ services:
       - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=analyzer
       - POSTGRES_DB=telemetry_analyzer
+
+  store-db:
+    image: postgres:16.1
+    container_name: commerce-store-db
+    ports:
+      - "6544:5432"
+    environment:
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=store
+      - POSTGRES_DB=commerce_store
+
+  cart-db:
+    image: postgres:16.1
+    container_name: commerce-cart-db
+    ports:
+      - "6545:5432"
+    environment:
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=cart
+      - POSTGRES_DB=commerce_cart
+
+  warehouse-db:
+    image: postgres:16.1
+    container_name: commerce-warehouse-db
+    ports:
+      - "6546:5432"
+    environment:
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=warehouse
+      - POSTGRES_DB=commerce_warehouse
