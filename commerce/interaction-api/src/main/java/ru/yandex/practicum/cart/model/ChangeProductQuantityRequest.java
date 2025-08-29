@@ -17,6 +17,7 @@ public class ChangeProductQuantityRequest {
     @NotNull(message = "Product ID cannot be null")
     UUID productId;
 
+
     @NotNull(message = "Quantity cannot be null")
     @Min(value = 1, message = "Quantity must be greater than 0")
     Integer newQuantity;
