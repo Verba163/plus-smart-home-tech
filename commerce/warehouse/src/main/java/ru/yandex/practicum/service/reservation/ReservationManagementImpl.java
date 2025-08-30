@@ -37,7 +37,7 @@ public class ReservationManagementImpl implements ReservationManagement {
 
         Map<UUID, Warehouse> products = itemRepository.findAllById(
                 reservations.stream().map(Reservation::getProductId).toList()
-        ).stream().collect(Collectors.toMap(Warehouse::getId, Function.identity()));
+        ).stream().collect(Collectors.toMap(Warehouse::getProductId, Function.identity()));
 
         for (Reservation reservation : reservations) {
             Warehouse item = products.get(reservation.getProductId());
@@ -67,7 +67,7 @@ public class ReservationManagementImpl implements ReservationManagement {
 
         Map<UUID, Warehouse> products = itemRepository.findAllById(cart.getProducts().keySet())
                 .stream()
-                .collect(Collectors.toMap(Warehouse::getId, Function.identity()));
+                .collect(Collectors.toMap(Warehouse::getProductId, Function.identity()));
 
         double totalWeight = 0;
         double totalVolume = 0;

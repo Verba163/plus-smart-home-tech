@@ -40,17 +40,22 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto addItemsToCart(String userName, Map<UUID, Integer> items) {
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findCartByUserName(userName).orElseGet(() -> {
-            ShoppingCart newCart = new ShoppingCart(UUID.randomUUID(), userName, new HashMap<>());
-            shoppingCartRepository.save(newCart);
-            log.info("Created new cart for user {}", userName);
-            return newCart;
+        ShoppingCart shoppingCart = shoppingCartRepository.findWithLockingByUserName(userName)
+                .orElseGet(() -> {
+                    ShoppingCart newCart = ShoppingCart.builder()
+                            .id(UUID.randomUUID())
+                            .userName(userName)
+                            .products(new HashMap<>())
+                            .build();
+                    return shoppingCartRepository.save(newCart);
+                });
+
+        items.forEach((productId, quantity) -> {
+            shoppingCart.getProducts().merge(productId, quantity, Integer::sum);
         });
-
-
-        shoppingCart.getProducts().putAll(items);
 
         try {
             warehouseClient.checkProductQuantity(shoppingCartMapper.toDto(shoppingCart));

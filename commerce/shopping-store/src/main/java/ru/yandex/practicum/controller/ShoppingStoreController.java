@@ -15,12 +15,11 @@ import ru.yandex.practicum.store.model.enums.ProductCategory;
 
 import java.util.UUID;
 
-import static ru.yandex.practicum.constants.ShoppingStoreApiPaths.QUANTITY_STATE;
-import static ru.yandex.practicum.constants.ShoppingStoreApiPaths.REMOVE_PRODUCT_FROM_STORE;
+import static ru.yandex.practicum.constants.ShoppingStoreApiPaths.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(ShoppingStoreApiPaths.BASE_PATH)
+@RequestMapping(BASE_PATH)
 public class ShoppingStoreController {
 
     private final StoreService storeService;
@@ -51,7 +50,7 @@ public class ShoppingStoreController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(QUANTITY_STATE)
-    public boolean updateQuantityState(@RequestBody SetProductQuantityStateRequest request) {
+    public boolean updateQuantityState(SetProductQuantityStateRequest request) {
         return storeService.updateQuantityState(request);
     }
 

@@ -20,7 +20,7 @@ public interface StoreService {
 
     Boolean deleteProduct(UUID productId);
 
-    Boolean updateQuantityState(SetProductQuantityStateRequest request);
+    boolean updateQuantityState(SetProductQuantityStateRequest request);
 
     Product getProductById(UUID productId);
 

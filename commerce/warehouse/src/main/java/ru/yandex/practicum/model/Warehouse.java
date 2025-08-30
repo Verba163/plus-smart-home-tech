@@ -17,35 +17,27 @@ import java.util.UUID;
 public class Warehouse {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
-    UUID id;
+    UUID productId;
 
-    @NotNull
     @Column(name = "fragile", nullable = false)
     Boolean fragile;
 
-    @NotNull
     @Column(name = "width", nullable = false)
-    Double width;
+    double width;
 
-    @NotNull
     @Column(name = "height", nullable = false)
-    Double height;
+    double height;
 
-    @NotNull
     @Column(name = "depth", nullable = false)
-    Double depth;
+    double depth;
 
-    @NotNull
     @Column(name = "weight", nullable = false)
     Double weight;
 
-    @NotNull
     @Column(name = "quantity", nullable = false)
-    Long quantity;
+    long quantity;
 
-    @NotNull
     @Column(name = "reserved_quantity", nullable = false)
-    Long reservedQuantity;
+    long reservedQuantity;
 }

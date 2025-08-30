@@ -14,6 +14,7 @@ import ru.yandex.practicum.store.model.SetProductQuantityStateRequest;
 import ru.yandex.practicum.store.model.dto.ProductDto;
 import ru.yandex.practicum.store.model.enums.ProductCategory;
 import ru.yandex.practicum.store.model.enums.ProductState;
+import ru.yandex.practicum.store.model.enums.QuantityState;
 
 import java.util.UUID;
 
@@ -47,7 +48,6 @@ public class StoreServiceImpl implements StoreService {
         log.info("Creating new product with name: {}", productDto.getProductName());
 
         Product product = productMapper.toEntity(productDto);
-        product.setProductState(ProductState.ACTIVE);
 
         Product savedProduct = storeRepository.save(product);
         log.info("Product created with ID: {}", savedProduct.getProductId());
@@ -93,7 +93,8 @@ public class StoreServiceImpl implements StoreService {
 
     @Transactional
     @Override
-    public Boolean updateQuantityState(SetProductQuantityStateRequest request) {
+    public boolean updateQuantityState(SetProductQuantityStateRequest request) {
+
         UUID productId = request.getProductId();
         log.info("Updating quantity state for product ID: {}", productId);
 
