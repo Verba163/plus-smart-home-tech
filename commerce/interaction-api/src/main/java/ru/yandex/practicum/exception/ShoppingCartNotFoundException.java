@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class ShoppingCartNotFoundException extends RuntimeException {
-    private final String userMessage;
-    private final String httpStatus;
+    String userMessage;
+    String httpStatus;
 
     public ShoppingCartNotFoundException(String message, String userMessage) {
         super(message);

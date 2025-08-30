@@ -29,13 +29,13 @@ public class ProductDto {
 
     String imageSrc;
 
-    @NotBlank
+    @NotNull
     QuantityState quantityState;
 
-    @NotBlank
+    @NotNull
     ProductState productState;
 
-    @NotBlank
+    @NotNull
     ProductCategory productCategory;
 
     @NotNull
