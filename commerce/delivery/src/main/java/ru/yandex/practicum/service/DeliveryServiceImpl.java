@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.delivery.model.ShippedToDeliveryRequest;
 import ru.yandex.practicum.delivery.model.dto.DeliveryModelDto;
 import ru.yandex.practicum.delivery.model.enums.DeliveryState;
-import ru.yandex.practicum.exception.NoDeliveryFoundException;
 import ru.yandex.practicum.exception.NoOrderFoundException;
 import ru.yandex.practicum.feign.clients.OrderClient;
 import ru.yandex.practicum.feign.clients.WarehouseClient;
@@ -26,6 +25,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DeliveryServiceImpl implements DeliveryService {
+
+    private static final String NO_DELIVERY_FOUND_MSG = "No delivery found for orderId: %s";
 
     private final DeliveryRepository deliveryRepository;
     private final DeliveryMapper deliveryMapper;
@@ -48,9 +49,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public void successfulDelivery(UUID orderId) {
         log.info("Attempting to complete delivery for order {}", orderId);
 
-        DeliveryModel delivery = deliveryRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new NoOrderFoundException(String.format("No delivery found for orderId: %s", orderId),
-                        String.format("No delivery found for orderId: %s", orderId)));
+        DeliveryModel delivery = findDeliveryByOrderId(orderId);
 
         delivery.setDeliveryState(DeliveryState.DELIVERED);
         orderClient.markOrderDeliverySuccessful(orderId);
@@ -62,9 +61,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     @Transactional
     public void pickedItemToDelivery(UUID orderId) {
-        DeliveryModel delivery = deliveryRepository.findByOrderId(orderId).
-                orElseThrow(() -> new NoOrderFoundException(String.format("No delivery found for orderId: %s", orderId),
-                        String.format("No delivery found for orderId: %s", orderId)));
+
+        DeliveryModel delivery = findDeliveryByOrderId(orderId);
 
         orderClient.processOrderAssembly(delivery.getOrderId());
 
@@ -83,9 +81,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     public void failedDelivery(UUID orderId) {
         log.info("Attempting to set delivery as failed for order {}", orderId);
 
-        DeliveryModel delivery = deliveryRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new NoOrderFoundException(String.format("No delivery found for orderId: %s", orderId),
-                        String.format("No delivery found for orderId: %s", orderId)));
+        DeliveryModel delivery = findDeliveryByOrderId(orderId);
 
         delivery.setDeliveryState(DeliveryState.FAILED);
         orderClient.markOrderDeliveryFailed(orderId);
@@ -97,12 +93,16 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public BigDecimal calculateDeliveryCost(OrderModelDto orderModelDto) {
 
-        DeliveryModel delivery = deliveryRepository.findByDeliveryId(orderModelDto.getDeliveryId())
-                .orElseThrow(() -> new NoDeliveryFoundException("No delivery found for deliveryId: " + orderModelDto.getDeliveryId(),
-                        "No delivery found for deliveryId: " + orderModelDto.getDeliveryId()));
+        DeliveryModel delivery = findDeliveryByOrderId(orderModelDto.getDeliveryId());
 
         AddressDto warehouseAddress = warehouseClient.getWarehouseAddress();
 
         return deliveryCostCalculator.calculate(orderModelDto, delivery, warehouseAddress);
+    }
+
+    private DeliveryModel findDeliveryByOrderId(UUID orderId) {
+        String errorMessage = String.format(NO_DELIVERY_FOUND_MSG, orderId);
+        return deliveryRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new NoOrderFoundException(errorMessage, errorMessage));
     }
 }

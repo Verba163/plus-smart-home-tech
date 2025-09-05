@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.exception.NoPaymentFoundException;
+import ru.yandex.practicum.exception.NoOrderFoundException;
 import ru.yandex.practicum.feign.clients.OrderClient;
 import ru.yandex.practicum.feign.clients.ShoppingStoreClient;
 import ru.yandex.practicum.mapper.PaymentMapper;
@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
+    private static final String NO_PAYMENT_FOUND_MSG = "Payment not found for id: %s";
+
     private final PaymentMapper paymentMapper;
     private final PaymentRepository paymentRepository;
     private final OrderClient orderClient;
@@ -35,18 +37,16 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public Double getTotalCost(OrderModelDto orderModelDto) {
-        PaymentModel payment = paymentRepository.findPaymentByPaymentId(orderModelDto.getPaymentId())
-                .orElseThrow(() -> new NoPaymentFoundException(
-                        (String.format("Payment not found for id: %s", orderModelDto.getPaymentId())),
-                        (String.format("Payment not found for id: %s", orderModelDto.getPaymentId()))));
+
+        PaymentModel paymentModel = findPaymentById(orderModelDto.getPaymentId());
 
         Double productCost = this.productCost(orderModelDto).doubleValue();
         Double fee = productCost * feeRate;
         Double deliveryPrice = orderModelDto.getDeliveryPrice();
         Double totalCost = productCost + fee + deliveryPrice;
 
-        payment.setTotalPayment(totalCost);
-        paymentRepository.save(payment);
+        paymentModel.setTotalPayment(totalCost);
+        paymentRepository.save(paymentModel);
         return totalCost;
     }
 
@@ -71,10 +71,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public void paymentFailed(UUID paymentId) {
-        PaymentModel paymentModel = paymentRepository.findPaymentByPaymentId(paymentId)
-                .orElseThrow(() -> new NoPaymentFoundException(
-                        (String.format("Payment not found for id: %s", paymentId)),
-                        (String.format("Payment not found for id: %s", paymentId))));
+
+        PaymentModel paymentModel = findPaymentById(paymentId);
 
         updatePaymentStatus(paymentModel, PaymentStatus.FAILED);
         orderClient.markOrderPaymentFailed(paymentModel.getOrderId());
@@ -83,10 +81,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public void paymentSuccess(UUID paymentId) {
-        PaymentModel paymentModel = paymentRepository.findPaymentByPaymentId(paymentId)
-                .orElseThrow(() -> new NoPaymentFoundException(
-                        (String.format("Payment not found for id: %s", paymentId)),
-                        (String.format("Payment not found for id: %s", paymentId))));
+
+        PaymentModel paymentModel = findPaymentById(paymentId);
 
         updatePaymentStatus(paymentModel, PaymentStatus.SUCCESS);
         orderClient.markOrderPaymentSuccessful(paymentModel.getOrderId());
@@ -112,4 +108,11 @@ public class PaymentServiceImpl implements PaymentService {
         paymentModel.setPaymentStatus(status);
         paymentRepository.save(paymentModel);
     }
+
+    private PaymentModel findPaymentById(UUID orderId) {
+        String errorMessage = String.format(NO_PAYMENT_FOUND_MSG, orderId);
+        return paymentRepository.findById(orderId)
+                .orElseThrow(() -> new NoOrderFoundException(errorMessage, errorMessage));
+    }
+
 }
