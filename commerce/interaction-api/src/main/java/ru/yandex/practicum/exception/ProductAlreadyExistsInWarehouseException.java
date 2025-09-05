@@ -1,11 +1,14 @@
 package ru.yandex.practicum.exception;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductAlreadyExistsInWarehouseException extends RuntimeException {
-    private final String userMessage;
-    private final String httpStatus;
+     String userMessage;
+     String httpStatus;
 
     public ProductAlreadyExistsInWarehouseException(String message, String userMessage) {
         super(message);

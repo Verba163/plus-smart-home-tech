@@ -1,11 +1,14 @@
 package ru.yandex.practicum.exception;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ShoppingCartNotFoundException extends RuntimeException {
-    private final String userMessage;
-    private final String httpStatus;
+     String userMessage;
+     String httpStatus;
 
     public ShoppingCartNotFoundException(String message, String userMessage) {
         super(message);
