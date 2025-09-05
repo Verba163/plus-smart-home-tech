@@ -7,8 +7,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class NoProductsInShoppingCartException extends RuntimeException {
-    String userMessage;
-    String httpStatus;
+     String userMessage;
+     String httpStatus;
 
     public NoProductsInShoppingCartException(String message, String userMessage) {
         super(message);
