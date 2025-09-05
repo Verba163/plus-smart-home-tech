@@ -31,6 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
+    private static final String NO_ORDER_FOUND_MSG = "No order found for orderId: %s";
 
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
@@ -90,33 +91,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderModelDto startOrderAssembly(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         orderModel.setState(OrderState.ASSEMBLED);
         return orderMapper.toDto(orderRepository.save(orderModel));
     }
 
     @Override
     public OrderModelDto failOrderAssembly(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         orderModel.setState(OrderState.ASSEMBLY_FAILED);
         return orderMapper.toDto(orderRepository.save(orderModel));
     }
 
     @Override
     public OrderModelDto calculateDeliveryCost(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
 
         BigDecimal totalCost = deliveryClient.calculateDeliveryCost(orderMapper.toDto(orderModel));
         orderModel.setDeliveryPrice(totalCost.doubleValue());
@@ -125,11 +120,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderModelDto calculateTotalCost(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         BigDecimal totalCost = paymentClient.calculateTotalCost(orderMapper.toDto(orderModel));
         orderModel.setTotalPrice(totalCost.doubleValue());
         return orderMapper.toDto(orderRepository.save(orderModel));
@@ -137,69 +130,63 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderModelDto markOrderAsCompleted(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         orderModel.setState(OrderState.COMPLETED);
         return orderMapper.toDto(orderRepository.save(orderModel));
     }
 
     @Override
     public OrderModelDto markDeliveryAsSuccessful(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         orderModel.setState(OrderState.DELIVERED);
         return orderMapper.toDto(orderRepository.save(orderModel));
     }
 
     @Override
     public OrderModelDto markDeliveryAsFailed(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         orderModel.setState(OrderState.DELIVERY_FAILED);
         return orderMapper.toDto(orderRepository.save(orderModel));
     }
 
     @Override
     public OrderModelDto markPaymentAsSuccessful(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         orderModel.setState(OrderState.PAID);
         return orderMapper.toDto(orderRepository.save(orderModel));
     }
 
     @Override
     public OrderModelDto markPaymentAsFailed(UUID orderId) {
-        OrderModel orderModel = orderRepository.findById(orderId).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", orderId),
-                        String.format("Order not found for id: %s", orderId)
-                ));
+
+        OrderModel orderModel = findOrderById(orderId);
+
         orderModel.setState(OrderState.PAYMENT_FAILED);
         return orderMapper.toDto(orderRepository.save(orderModel));
     }
 
     @Override
     public OrderModelDto processProductReturn(ProductReturnRequest request) {
-        OrderModel orderModel = orderRepository.findById(request.getOrderId()).
-                orElseThrow(() -> new NoOrderFoundException(
-                        String.format("Order not found for id: %s", request.getOrderId()),
-                        String.format("Order not found for id: %s", request.getOrderId())
-                ));
-        warehouseClient. acceptReturn(request.getProducts());
+
+        OrderModel orderModel = findOrderById(request.getOrderId());
+
+        warehouseClient.acceptReturn(request.getProducts());
 
         orderModel.setState(OrderState.PRODUCT_RETURNED);
         return orderMapper.toDto(orderRepository.save(orderModel));
+    }
+
+    private OrderModel findOrderById(UUID orderId) {
+        String errorMessage = String.format(NO_ORDER_FOUND_MSG, orderId);
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoOrderFoundException(errorMessage, errorMessage));
     }
 }

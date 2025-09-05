@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.cart.model.ChangeProductQuantityRequest;
 import ru.yandex.practicum.cart.model.dto.ShoppingCartDto;
-import ru.yandex.practicum.feign.clients.WarehouseClient;
+import ru.yandex.practicum.exception.NoOrderFoundException;
 import ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouse;
-import ru.yandex.practicum.exception.ShoppingCartNotFoundException;
+import ru.yandex.practicum.feign.clients.WarehouseClient;
 import ru.yandex.practicum.mapper.ShoppingCartMapper;
 import ru.yandex.practicum.model.ShoppingCart;
 import ru.yandex.practicum.storage.ShoppingCartRepository;
@@ -23,6 +23,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
+    private static final String NO_CART_FOUND_MSG = "Shopping cart not found for user: %s";
+
     private final ShoppingCartRepository shoppingCartRepository;
     private final ShoppingCartMapper shoppingCartMapper;
     private final WarehouseClient warehouseClient;
@@ -30,11 +32,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional(readOnly = true)
     @Override
     public ShoppingCartDto getShoppingCart(String userName) {
-        ShoppingCart cart = shoppingCartRepository.findCartByUserName(userName)
-                .orElseThrow(() -> new ShoppingCartNotFoundException(
-                        String.format("Shopping cart not found for user: %s", userName),
-                        String.format("Shopping cart not found for user: %s", userName)
-                ));
+
+        ShoppingCart cart = findCartByUserName(userName);
 
         return shoppingCartMapper.toDto(cart);
     }
@@ -71,11 +70,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public void deleteCart(String userName) {
-        ShoppingCart cart = shoppingCartRepository.findCartByUserName(userName)
-                .orElseThrow(() -> new ShoppingCartNotFoundException(
-                        String.format("Shopping cart not found for user: %s", userName),
-                        String.format("Shopping cart not found for user: %s", userName)
-                ));
+
+        ShoppingCart cart = findCartByUserName(userName);
+
         shoppingCartRepository.delete(cart);
         log.info("Deleted shopping cart for user {}", userName);
     }
@@ -83,11 +80,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto removeItemsFromCart(String userName, List<UUID> itemIds) {
 
-        ShoppingCart cart = shoppingCartRepository.findCartByUserName(userName)
-                .orElseThrow(() -> new ShoppingCartNotFoundException(
-                        String.format("Shopping cart not found for user: %s", userName),
-                        String.format("Shopping cart not found for user: %s", userName)
-                ));
+        ShoppingCart cart = findCartByUserName(userName);
 
         for (UUID itemId : itemIds) {
             if (!cart.getProducts().containsKey(itemId)) {
@@ -106,11 +99,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto changeItemQuantity(String userName, ChangeProductQuantityRequest quantityRequest) {
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findCartByUserName(userName)
-                .orElseThrow(() -> new ShoppingCartNotFoundException(
-                        String.format("Shopping cart not found for user: %s", userName),
-                        String.format("Shopping cart not found for user: %s", userName)
-                ));
+        ShoppingCart shoppingCart = findCartByUserName(userName);
 
         UUID productId = quantityRequest.getProductId();
 
@@ -127,5 +116,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info("Updated quantity of product {} in {}'s cart to {}", productId, userName, quantityRequest.getNewQuantity());
 
         return shoppingCartMapper.toDto(shoppingCart);
+    }
+
+    private ShoppingCart findCartByUserName(String userName) {
+        String errorMessage = String.format(NO_CART_FOUND_MSG, userName);
+        return shoppingCartRepository.findCartByUserName(userName)
+                .orElseThrow(() -> new NoOrderFoundException(errorMessage, errorMessage));
     }
 }
