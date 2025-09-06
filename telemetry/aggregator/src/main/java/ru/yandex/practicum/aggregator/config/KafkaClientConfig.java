@@ -3,6 +3,7 @@ package ru.yandex.practicum.aggregator.config;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
@@ -11,6 +12,7 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 import java.util.Properties;
 
 @Configuration
+@ConfigurationProperties(prefix = "aggregator.kafka")
 public class KafkaClientConfig {
 
     private final KafkaPropertiesConfig kafkaProperties;
