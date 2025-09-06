@@ -8,12 +8,14 @@ import ru.yandex.practicum.exception.NoProductInWarehouseException;
 import ru.yandex.practicum.exception.ProductAlreadyExistsInWarehouseException;
 import ru.yandex.practicum.mapper.WarehouseMapper;
 import ru.yandex.practicum.model.Warehouse;
-import ru.yandex.practicum.repository.ReservationRepository;
 import ru.yandex.practicum.repository.WarehouseRepository;
 import ru.yandex.practicum.warehouse.model.AddProductToWarehouseRequest;
 import ru.yandex.practicum.warehouse.model.dto.NewProductInWarehouseRequest;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -55,4 +57,25 @@ public class ProductManagementImpl implements ProductManagement {
                         String.format("Product with ID %s not found in warehouse", productId)));
     }
 
+    @Override
+    @Transactional
+    public void acceptReturn(Map<UUID, Long> returnedProducts) {
+
+        Map<UUID, Warehouse> products = warehouseRepository.findAllById(returnedProducts.keySet()).stream()
+                .collect(Collectors.toMap(Warehouse::getProductId, Function.identity()));
+
+        for (Map.Entry<UUID, Long> entry : returnedProducts.entrySet()) {
+
+            if (!products.containsKey(entry.getKey())) {
+                throw new NoProductInWarehouseException(
+                        String.format("Product with ID %s not found in warehouse", entry.getKey()),
+                        String.format("Product with ID %s not found in warehouse", entry.getKey()));
+            }
+
+            Warehouse warehouse = products.get(entry.getKey());
+            warehouse.setQuantity(warehouse.getQuantity() + entry.getValue());
+        }
+
+        warehouseRepository.saveAll(products.values());
+    }
 }

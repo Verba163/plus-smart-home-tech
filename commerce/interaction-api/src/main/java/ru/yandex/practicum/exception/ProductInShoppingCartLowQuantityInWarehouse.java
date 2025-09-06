@@ -10,9 +10,9 @@ import java.util.UUID;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductInShoppingCartLowQuantityInWarehouse extends RuntimeException {
-    String userMessage;
-    String httpStatus = "400 BAD_REQUEST";
-    List<UUID> missingProducts;
+     String userMessage;
+     String httpStatus = "400 BAD_REQUEST";
+     List<UUID> missingProducts;
 
     public ProductInShoppingCartLowQuantityInWarehouse(String message, List<UUID> missingProducts) {
         super(message);

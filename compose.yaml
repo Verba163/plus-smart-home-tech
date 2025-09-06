@@ -85,3 +85,33 @@ services:
       - POSTGRES_PASSWORD=12345
       - POSTGRES_USER=warehouse
       - POSTGRES_DB=commerce_warehouse
+
+  delivery-db:
+    image: postgres:16.1
+    container_name: delivery-db
+    ports:
+      - "6547:5432"
+    environment:
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=delivery
+      - POSTGRES_DB=commerce_delivery
+
+  payment-db:
+    image: postgres:16.1
+    container_name: payment-db
+    ports:
+      - "6548:5432"
+    environment:
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=payment
+      - POSTGRES_DB=commerce_payment
+
+  order-db:
+    image: postgres:16.1
+    container_name: order-db
+    ports:
+      - "6549:5432"
+    environment:
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=order
+      - POSTGRES_DB=commerce_order
